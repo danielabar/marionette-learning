@@ -15,7 +15,8 @@
   var AppRouter = Backbone.Router.extend({
     routes: {
       '' : 'showIndex',
-      'users': 'showUserList'
+      'users': 'showUserList',
+      'users/:id': 'showUserDetail'
     },
     showIndex: function() {
       UserAdmin.AppController.showIndex();
@@ -23,6 +24,9 @@
     showUserList: function() {
       // if url shows /users and user refreshes the page, then this route handler will be called
       UserAdmin.AppController.showUserList();
+    },
+    showUserDetail: function(id) {
+      UserAdmin.AppController.showUserDetail(id);
     }
   });
 
@@ -38,6 +42,23 @@
     }
   });
 
+  // Declare a Marionette layout view to contain multiple child views
+  var UserLayoutView = Marionette.LayoutView.extend({
+    template: '#user-layout-template',
+    regions: {
+      summary: '#summary',
+      detail: '#detail'
+    }
+  });
+
+  var UserSummaryView = Marionette.ItemView.extend({
+    template: '#summary-template'
+  });
+
+  var UserDetailView = Marionette.ItemView.extend({
+    template: '#detail-template'
+  });
+
   // Not really a controller in the MVC sense, its just a Marionette object
   var AppController = Marionette.Controller.extend({
 
@@ -50,6 +71,14 @@
       var userListView = new UserListView({collection: new Backbone.Collection(testData)});
       UserAdmin.mainRegion.show(userListView);
       UserAdmin.Router.navigate('users'); // Update the browser url, this does not actually navigate
+    },
+
+    showUserDetail: function(id) {
+      var layout = new UserLayoutView();
+      UserAdmin.mainRegion.show(layout);
+      layout.summary.show(new UserSummaryView());
+      layout.detail.show(new UserDetailView());
+      UserAdmin.Router.navigate('users/' + id); // Update the browser url, this does not actually navigate
     }
 
   });
@@ -75,7 +104,15 @@
   // Define User Item View using an inline template (real app would be more complicated than this)
   var UserItemView = Marionette.ItemView.extend({
     tagName: 'tr',
-    template: _.template('<td><%=email%></td>')
+    template: _.template('<td><a href="#"><%=email%></a></td>'),
+    events: {
+      'click a' : 'showUserDetail'
+    },
+    showUserDetail: function(evt) {
+      evt.preventDefault();
+      // pass the current user id to the user detail view
+      UserAdmin.AppController.showUserDetail(this.model.id);
+    }
   });
 
   // Define User List View
