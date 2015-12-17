@@ -14,10 +14,14 @@
   // Use Backbone router (not Marionette)
   var AppRouter = Backbone.Router.extend({
     routes: {
-      '' : 'showIndex'
+      '' : 'showIndex',
+      'users': 'showUserList'
     },
     showIndex: function() {
       UserAdmin.AppController.showIndex();
+    },
+    showUserList: function() {
+      UserAdmin.AppController.showUserList();
     }
   });
 
@@ -27,8 +31,10 @@
     events: {
       'click #nav-users-index' : 'showUserList'
     },
-    showUserList: function() {
-      UserAdmin.AppController.showUserList();
+    showUserList: function(evt) {
+      evt.preventDefault();
+      // pass true option to router to tell it to execute the route handler
+      UserAdmin.Router.navigate('users', true);
     }
   });
 
@@ -41,7 +47,7 @@
     },
 
     showUserList: function() {
-      var userListView = new UserListView({collection: new Backbone.collection(testData)});
+      var userListView = new UserListView({collection: new Backbone.Collection(testData)});
       UserAdmin.mainRegion.show(userListView);
     }
 
