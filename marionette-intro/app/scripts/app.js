@@ -1,5 +1,7 @@
 (function() {
 
+  // For initial learning, all the code is in one file, later will be split upt
+
   // Test data, later this will come from server
   var testData = [
     {id: 1, email: 'test1@test.com'},
@@ -7,6 +9,10 @@
     {id: 3, email: 'test3@test.com'},
     {id: 4, email: 'test4@test.com'}
   ];
+
+  var UsersCollection = Backbone.Collection.extend({
+    url: 'http://localhost:3000/users'
+  });
 
   // Create application - name it explicitly!
   var UserAdmin = new Marionette.Application();
@@ -68,16 +74,19 @@
     },
 
     showUserList: function() {
-      var userListView = new UserListView({collection: new Backbone.Collection(testData)});
+      var userListView = new UserListView({collection: UserAdmin.Users});
       UserAdmin.mainRegion.show(userListView);
       UserAdmin.Router.navigate('users'); // Update the browser url, this does not actually navigate
     },
 
     showUserDetail: function(id) {
-      var layout = new UserLayoutView();
+      var user = UserAdmin.Users.get(id);
+
+      var layout = new UserLayoutView({model: user});
       UserAdmin.mainRegion.show(layout);
-      layout.summary.show(new UserSummaryView());
-      layout.detail.show(new UserDetailView());
+
+      layout.summary.show(new UserSummaryView({model: user}));
+      layout.detail.show(new UserDetailView({model: user}));
       UserAdmin.Router.navigate('users/' + id); // Update the browser url, this does not actually navigate
     }
 
@@ -99,6 +108,9 @@
 
     // Required when using router
     Backbone.history.start();
+
+    // Instantiate users collection
+    UserAdmin.Users = new UsersCollection(testData);
   });
 
   // Define User Item View using an inline template (real app would be more complicated than this)
