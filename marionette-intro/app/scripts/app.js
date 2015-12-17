@@ -21,6 +21,7 @@
       UserAdmin.AppController.showIndex();
     },
     showUserList: function() {
+      // if url shows /users and user refreshes the page, then this route handler will be called
       UserAdmin.AppController.showUserList();
     }
   });
@@ -33,8 +34,7 @@
     },
     showUserList: function(evt) {
       evt.preventDefault();
-      // pass true option to router to tell it to execute the route handler
-      UserAdmin.Router.navigate('users', true);
+      UserAdmin.AppController.showUserList();
     }
   });
 
@@ -49,6 +49,7 @@
     showUserList: function() {
       var userListView = new UserListView({collection: new Backbone.Collection(testData)});
       UserAdmin.mainRegion.show(userListView);
+      UserAdmin.Router.navigate('users'); // Update the browser url, this does not actually navigate
     }
 
   });
@@ -81,7 +82,11 @@
   var UserListView = Marionette.CollectionView.extend({
     tagName: 'table',
     className: 'table table-striped',
-    childView: UserItemView
+    childView: UserItemView,
+    // Marionette provides this:
+    onBeforeRender: function() {
+      this.$el.append('<h2>User List</h2>');
+    }
   });
 
   // Every app has start and stop, MUST call start otherwise nothing will show
