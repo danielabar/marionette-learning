@@ -1,3 +1,10 @@
+var testData = [
+  {id: 1, email: 'test1@test.com'},
+  {id: 2, email: 'test2@test.com'},
+  {id: 3, email: 'test3@test.com'},
+  {id: 4, email: 'test4@test.com'}
+];
+
 // App Objects
 var UserAdmin = new Marionette.Application();
 UserAdmin.addRegions({
@@ -18,14 +25,17 @@ UserAdmin.addInitializer(function() {
   var breadCrumbs = new BreadCrumbModule(UserAdmin);
   breadCrumbs.load(UserAdmin.navRegion, {title: 'Home'});
 
+  // Instantiate and load the user module
+  var userModule = new UserModule({app: UserAdmin, initialData: testData});
+
   // Events
   UserAdmin.on('user:selected', function(user) {
-    UserAdmin.UserController.showUserDetail(user);
+    userModule.controller.showUserDetail(user);
     breadCrumbs.setCrumbs([crumbs.home, crumbs.list, {title: user.get('email')}]);
   });
 
   UserAdmin.on('user:listing:requested', function() {
-    UserAdmin.UserController.showUserList();
+    userModule.controller.showUserList();
     breadCrumbs.setCrumbs([crumbs.home, crumbs.list]);
   });
 
@@ -41,10 +51,7 @@ UserAdmin.addInitializer(function() {
 
   // Inits
   UserAdmin.AppController = new AppController();
-  UserAdmin.UserController = new UserController();
-  UserAdmin.UserRouter = new UserRouter();
   UserAdmin.HomeRouter = new HomeRouter();
-  UserAdmin.Users = new UsersCollection(testData);
 
   // Start
   Backbone.history.start();
