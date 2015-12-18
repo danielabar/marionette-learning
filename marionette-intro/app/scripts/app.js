@@ -4,20 +4,6 @@ UserAdmin.addRegions({
   mainRegion: '#app',
   navRegion: '#breadcrumbs'
 });
-var HomeRouter = Backbone.Router.extend({
-  routes: {
-    '' : 'showIndex'
-  },
-  showIndex: function() {
-    UserAdmin.trigger('index:requested');
-  },
-});
-var AppController = Marionette.Controller.extend({
-  showIndex: function() {
-    UserAdmin.mainRegion.show(new IndexView());
-    UserAdmin.HomeRouter.navigate('');
-  },
-});
 
 // Events
 UserAdmin.addInitializer(function() {
@@ -62,18 +48,6 @@ UserAdmin.addInitializer(function() {
 
   // Start
   Backbone.history.start();
-});
-
-// Views
-var IndexView = Marionette.ItemView.extend({
-  template: '#index-template',
-  events: {
-    'click #nav-users-index' : 'showUserList'
-  },
-  showUserList: function(evt) {
-    evt.preventDefault();
-    UserAdmin.trigger('user:listing:requested');
-  }
 });
 
 // Start
