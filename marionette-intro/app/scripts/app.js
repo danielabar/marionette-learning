@@ -3,13 +3,17 @@
   // App Objects
   var UserAdmin = new Marionette.Application();
   var AppRouter = Backbone.Router.extend({
+
+    // Define the routes
     routes: {
       '' : 'showIndex',
       'users': 'showUserList',
       'users/:id': 'showUserDetail'
     },
+
+    // Define the route handlers
     showIndex: function() {
-      UserAdmin.AppController.showIndex();
+      UserAdmin.trigger('index:requested');
     },
     showUserList: function() {
       // broken for me on refresh unless I add this hack
@@ -63,6 +67,10 @@
 
     UserAdmin.on('user:listing:requested', function() {
       UserAdmin.AppController.showUserList();
+    });
+
+    UserAdmin.on('index:requested', function() {
+      UserAdmin.AppController.showIndex();
     });
 
   });
