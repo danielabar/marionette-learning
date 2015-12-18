@@ -14,7 +14,10 @@ var UserRouter = Backbone.Router.extend({
   },
 
   showUserDetail: function(id) {
-    var user = this.module.collection.get(id);
-    user.select();
+    var user = new User({id: id});
+    // Debate: Is calling fetch from router a Backbone anti-pattern?
+    user.fetch().then(function() {
+      user.select();
+    });
   }
 });
