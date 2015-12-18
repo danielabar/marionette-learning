@@ -2,6 +2,10 @@
 
   // App Objects
   var UserAdmin = new Marionette.Application();
+  UserAdmin.addRegions({
+    mainRegion: '#app',
+    navRegion: '#breadcrumbs'
+  });
   var AppRouter = Backbone.Router.extend({
 
     // Define the routes
@@ -66,20 +70,24 @@
       list: {title: 'User Listing', trigger: 'user:listing:requested'}
     };
 
+    // Instantiate and load the breadcrumbs module
+    var breadCrumbs = new BreadCrumbModule(UserAdmin);
+    breadCrumbs.load(UserAdmin.navRegion, {title: 'Home'});
+
     // Events
     UserAdmin.on('user:selected', function(user) {
       UserAdmin.AppController.showUserDetail(user);
-      UserAdmin.BreadCrumbs.reset([crumbs.home, crumbs.list, {title: user.get('email')}]);
+      breadCrumbs.setCrumbs([crumbs.home, crumbs.list, {title: user.get('email')}]);
     });
 
     UserAdmin.on('user:listing:requested', function() {
       UserAdmin.AppController.showUserList();
-      UserAdmin.BreadCrumbs.reset([crumbs.home, crumbs.list]);
+      breadCrumbs.setCrumbs([crumbs.home, crumbs.list]);
     });
 
     UserAdmin.on('index:requested', function() {
       UserAdmin.AppController.showIndex();
-      UserAdmin.BreadCrumbs.reset([crumbs.home]);
+      breadCrumbs.setCrumbs([crumbs.home]);
     });
 
   });
@@ -87,23 +95,10 @@
   // Initializer
   UserAdmin.addInitializer(function() {
 
-    // Tell the app where it should output all the templates and views (aka Regions) via jquery selector
-    UserAdmin.addRegions({
-      mainRegion: '#app',
-      navRegion: '#breadcrumbs'
-    });
-
     // Inits
     UserAdmin.AppController = new AppController();
     UserAdmin.Router = new AppRouter();
     UserAdmin.Users = new UsersCollection(testData);
-    UserAdmin.BreadCrumbs = new BreadCrumbCollection({ title: 'Home' });
-    UserAdmin.navRegion.show(new BreadCrumbList({collection: UserAdmin.BreadCrumbs}));
-
-    // This really belongs in Events but BreadCrumbs are not defined until here in Initializer
-    UserAdmin.BreadCrumbs.on('breadcrumb:selected', function(crumb) {
-      UserAdmin.trigger(crumb.get('trigger'));
-    });
 
     // Start
     Backbone.history.start();
@@ -135,14 +130,6 @@
   var UsersCollection = Backbone.Collection.extend({
     url: 'http://localhost:3000/users',
     model: User
-  });
-  var BreadCrumb = Backbone.Model.extend({
-    select: function() {
-      this.trigger('breadcrumb:selected', this);
-    }
-  });
-  var BreadCrumbCollection = Backbone.Collection.extend({
-    model: BreadCrumb
   });
 
   // Views
@@ -190,24 +177,6 @@
     onBeforeRender: function() {
       this.$el.append('<h2>User List</h2>');
     }
-  });
-  var BreadCrumbView = Marionette.ItemView.extend({
-    tagName: 'li',
-    template: _.template('<a href="#"><%=title%></a>'),
-    events: {
-      'click a': 'fireTrigger'
-    },
-    fireTrigger: function(evt) {
-      evt.preventDefault();
-      // recall a select function exists on the BreadCrumb model
-      // but how do we know that BreadCrumb model is associated with BreadCrumbView???
-      this.model.select();
-    }
-  });
-  var BreadCrumbList = Marionette.CollectionView.extend({
-    tagName: 'ol',
-    className: 'breadcrumb',
-    childView: BreadCrumbView
   });
 
   // Start
