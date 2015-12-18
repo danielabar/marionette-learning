@@ -65,6 +65,10 @@
       var crumbs = new Backbone.Collection([{title: 'Home'}, {title: 'User Listing'}]);
       this.renderView(crumbs);
     },
+    showUserDetail: function(user) {
+      var crumbs = new Backbone.Collection([{title: 'Home'}, {title: 'User Listing'}, {title: user.get('email')}]);
+      this.renderView(crumbs);
+    },
     renderView: function(crumbs) {
       var breadCrumbView = new BreadCrumbList({collection: crumbs});
       UserAdmin.navRegion.show(breadCrumbView);
@@ -77,6 +81,7 @@
     // Events
     UserAdmin.on('user:selected', function(user) {
       UserAdmin.AppController.showUserDetail(user);
+      UserAdmin.BreadCrumbController.showUserDetail(user);
     });
 
     UserAdmin.on('user:listing:requested', function() {
@@ -185,7 +190,7 @@
   });
   var BreadCrumbView = Marionette.ItemView.extend({
     tagName: 'li',
-    template: _.template('<%=title%>')
+    template: _.template('<a href="#"><%=title%></a>')
   });
   var BreadCrumbList = Marionette.CollectionView.extend({
     tagName: 'ol',
