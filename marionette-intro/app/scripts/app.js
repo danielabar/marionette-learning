@@ -1,42 +1,69 @@
 (function() {
 
-  // For initial learning, all the code is in one file, later will be split upt
-
-  // Test data, later this will come from server
+  // Data
   var testData = [
     {id: 1, email: 'test1@test.com'},
     {id: 2, email: 'test2@test.com'},
     {id: 3, email: 'test3@test.com'},
     {id: 4, email: 'test4@test.com'}
   ];
-
-  var UsersCollection = Backbone.Collection.extend({
-    url: 'http://localhost:3000/users'
-  });
-
-  // Create application - name it explicitly!
-  var UserAdmin = new Marionette.Application();
-
-  // Use Backbone router (not Marionette)
-  var AppRouter = Backbone.Router.extend({
-    routes: {
-      '' : 'showIndex',
-      'users': 'showUserList',
-      'users/:id': 'showUserDetail'
+  var User = Backbone.Model.extend({
+    urlRoot: 'http://localhost:3000/users',
+    validate: function(atts, opts) {
+      if (!(atts.email)) {
+        return 'email is required';
+      }
     },
-    showIndex: function() {
-      UserAdmin.AppController.showIndex();
+    initialize: function() {
+      this.on('invalid', function(m) {
+        alert(m.validationError);
+      });
     },
-    showUserList: function() {
-      // if url shows /users and user refreshes the page, then this route handler will be called
-      UserAdmin.AppController.showUserList();
-    },
-    showUserDetail: function(id) {
-      UserAdmin.AppController.showUserDetail(id);
+    select: function() {
+      UserAdmin.trigger('user:selected', this);
     }
   });
+  var UsersCollection = Backbone.Collection.extend({
+    url: 'http://localhost:3000/users',
+    model: User
+  });
 
-  // Create the main view (ItemView is a good default choice), pass jquery selector to template
+  // App
+  var UserAdmin = new Marionette.Application();
+
+  // Views
+  var UserLayoutView = Marionette.LayoutView.extend({
+    template: '#user-layout-template',
+    regions: {
+      summary: '#summary',
+      detail: '#detail'
+    }
+  });
+  var UserSummaryView = Marionette.ItemView.extend({
+    template: '#summary-template'
+  });
+  var UserItemView = Marionette.ItemView.extend({
+    tagName: 'tr',
+    template: _.template('<td><a href="#"><%=email%></a></td>'),
+    events: {
+      'click a' : 'showUserDetail'
+    },
+    showUserDetail: function(evt) {
+      evt.preventDefault();
+      // pass the current user id to the user detail view
+      // UserAdmin.AppController.showUserDetail(this.model.id);
+      this.model.select();
+    }
+  });
+  var UserListView = Marionette.CollectionView.extend({
+    tagName: 'table',
+    className: 'table table-striped',
+    childView: UserItemView,
+    // Marionette provides this:
+    onBeforeRender: function() {
+      this.$el.append('<h2>User List</h2>');
+    }
+  });
   var IndexView = Marionette.ItemView.extend({
     template: '#index-template',
     events: {
@@ -47,25 +74,40 @@
       UserAdmin.AppController.showUserList();
     }
   });
-
-  // Declare a Marionette layout view to contain multiple child views
-  var UserLayoutView = Marionette.LayoutView.extend({
-    template: '#user-layout-template',
-    regions: {
-      summary: '#summary',
-      detail: '#detail'
-    }
-  });
-
-  var UserSummaryView = Marionette.ItemView.extend({
-    template: '#summary-template'
-  });
-
   var UserDetailView = Marionette.ItemView.extend({
     template: '#detail-template'
   });
 
-  // Not really a controller in the MVC sense, its just a Marionette object
+  // Router
+  var AppRouter = Backbone.Router.extend({
+    routes: {
+      '' : 'showIndex',
+      'users': 'showUserList',
+      'users/:id': 'showUserDetail'
+    },
+    showIndex: function() {
+      UserAdmin.AppController.showIndex();
+    },
+    showUserList: function() {
+      // broken for me on refresh unless I add this hack
+      if (!UserAdmin.Users) {
+        UserAdmin.Users = new UsersCollection(testData);
+      }
+      // if url shows /users and user refreshes the page, then this route handler will be called
+      UserAdmin.AppController.showUserList();
+    },
+    showUserDetail: function(id) {
+      // broken for me on refresh unless I add this hack
+      if (!UserAdmin.Users) {
+        UserAdmin.Users = new UsersCollection(testData);
+      }
+      var user = UserAdmin.Users.get(id);
+      user.select();
+      // UserAdmin.AppController.showUserDetail(id);
+    }
+  });
+
+  // Controller
   var AppController = Marionette.Controller.extend({
 
     showIndex: function() {
@@ -79,25 +121,28 @@
       UserAdmin.Router.navigate('users'); // Update the browser url, this does not actually navigate
     },
 
-    showUserDetail: function(id) {
-      var user = UserAdmin.Users.get(id);
-
+    showUserDetail: function(user) {
       var layout = new UserLayoutView({model: user});
       UserAdmin.mainRegion.show(layout);
 
       layout.summary.show(new UserSummaryView({model: user}));
       layout.detail.show(new UserDetailView({model: user}));
-      UserAdmin.Router.navigate('users/' + id); // Update the browser url, this does not actually navigate
+      UserAdmin.Router.navigate('users/' + user.id); // Update the browser url, this does not actually navigate
     }
 
   });
 
-  // Define application initialization event - this method can get quite long
+  // Initializer
   UserAdmin.addInitializer(function() {
 
     // Tell the app where it should output all the templates and views (aka Regions) via jquery selector
     UserAdmin.addRegions({
       mainRegion: '#app'
+    });
+
+    // Events
+    UserAdmin.on('user:selected', function(user) {
+      UserAdmin.AppController.showUserDetail(user);
     });
 
     // Initialize the app controller
@@ -113,32 +158,7 @@
     UserAdmin.Users = new UsersCollection(testData);
   });
 
-  // Define User Item View using an inline template (real app would be more complicated than this)
-  var UserItemView = Marionette.ItemView.extend({
-    tagName: 'tr',
-    template: _.template('<td><a href="#"><%=email%></a></td>'),
-    events: {
-      'click a' : 'showUserDetail'
-    },
-    showUserDetail: function(evt) {
-      evt.preventDefault();
-      // pass the current user id to the user detail view
-      UserAdmin.AppController.showUserDetail(this.model.id);
-    }
-  });
-
-  // Define User List View
-  var UserListView = Marionette.CollectionView.extend({
-    tagName: 'table',
-    className: 'table table-striped',
-    childView: UserItemView,
-    // Marionette provides this:
-    onBeforeRender: function() {
-      this.$el.append('<h2>User List</h2>');
-    }
-  });
-
-  // Every app has start and stop, MUST call start otherwise nothing will show
+  // Start
   UserAdmin.start();
 
 })();
