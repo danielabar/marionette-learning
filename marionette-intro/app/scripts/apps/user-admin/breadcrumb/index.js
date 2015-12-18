@@ -23,10 +23,4 @@ var BreadCrumbModule = function(app) {
   };
 
   return module;
-
-  // TODO Figure out where this goes
-  // UserAdmin.BreadCrumbs.on('breadcrumb:selected', function(crumb) {
-  //   UserAdmin.trigger(crumb.get('trigger'));
-  // });
-
 };
