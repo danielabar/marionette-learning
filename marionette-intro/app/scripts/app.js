@@ -56,24 +56,6 @@
     }
 
   });
-  var BreadCrumbController = Marionette.Controller.extend({
-    showHome: function() {
-      var crumbs = new Backbone.Collection({title: 'Home'});
-      this.renderView(crumbs);
-    },
-    showUserList: function() {
-      var crumbs = new Backbone.Collection([{title: 'Home'}, {title: 'User Listing'}]);
-      this.renderView(crumbs);
-    },
-    showUserDetail: function(user) {
-      var crumbs = new Backbone.Collection([{title: 'Home'}, {title: 'User Listing'}, {title: user.get('email')}]);
-      this.renderView(crumbs);
-    },
-    renderView: function(crumbs) {
-      var breadCrumbView = new BreadCrumbList({collection: crumbs});
-      UserAdmin.navRegion.show(breadCrumbView);
-    }
-  });
 
   // Events
   UserAdmin.addInitializer(function() {
@@ -81,17 +63,17 @@
     // Events
     UserAdmin.on('user:selected', function(user) {
       UserAdmin.AppController.showUserDetail(user);
-      UserAdmin.BreadCrumbController.showUserDetail(user);
+      UserAdmin.BreadCrumbs.reset([{title: 'Home'}, {title: 'User Listing'}, {title: user.get('email')}]);
     });
 
     UserAdmin.on('user:listing:requested', function() {
       UserAdmin.AppController.showUserList();
-      UserAdmin.BreadCrumbController.showUserList();
+      UserAdmin.BreadCrumbs.reset([{title: 'Home'}, {title: 'User Listing'}]);
     });
 
     UserAdmin.on('index:requested', function() {
       UserAdmin.AppController.showIndex();
-      UserAdmin.BreadCrumbController.showHome();
+      UserAdmin.BreadCrumbs.reset([{title: 'Home'}]);
     });
 
   });
@@ -107,10 +89,13 @@
 
     // Inits
     UserAdmin.AppController = new AppController();
-    UserAdmin.BreadCrumbController = new BreadCrumbController();
     UserAdmin.Router = new AppRouter();
-    Backbone.history.start();
     UserAdmin.Users = new UsersCollection(testData);
+    UserAdmin.BreadCrumbs = new BreadCrumbCollection({ title: 'Home' });
+    UserAdmin.navRegion.show(new BreadCrumbList({collection: UserAdmin.BreadCrumbs}));
+
+    // Start
+    Backbone.history.start();
   });
 
   // Data
@@ -140,7 +125,14 @@
     url: 'http://localhost:3000/users',
     model: User
   });
-  var BreadCrumbCollection = Backbone.Collection.extend({});
+  var BreadCrumb = Backbone.Model.extend({
+    select: function() {
+
+    }
+  });
+  var BreadCrumbCollection = Backbone.Collection.extend({
+    model: BreadCrumb
+  });
 
   // Views
   var IndexView = Marionette.ItemView.extend({
