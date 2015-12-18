@@ -1,25 +1,28 @@
-var BreadCrumbModule = function(app) {
+var BreadCrumbModule = function(settings) {
 
   var module = {};
+  module.app = settings.app || {};
 
-  var collection = {}; // private
+  var initialData = settings.initialData || {};
+  var collection = new BreadCrumbCollection(initialData);
+  var region = settings.region;
+  var view = new BreadCrumbList({collection: collection});
 
   module.setCrumbs = function(data) {
     collection.reset(data);
   };
 
-  module.load = function(region, initialData) {
-    var view;
+  // events
+  collection.on('breadcrumb:selected', function(crumb) {
+    module.app.trigger(crumb.get('trigger'));
+  });
 
-    initialData = initialData || {};
-
-    collection = new BreadCrumbCollection(initialData);
-    collection.on('breadcrumb:selected', function(crumb) {
-      app.trigger(crumb.get('trigger'));
-    });
-
-    view = new BreadCrumbList({collection: collection});
-    region.show(view);
+  module.show = function() {
+    if (region) {
+      region.show(view);
+    } else {
+      throw new Error('Unable to show breadcrumb with no region specified');
+    }
   };
 
   return module;

@@ -22,8 +22,12 @@ UserAdmin.addInitializer(function() {
   };
 
   // Instantiate and load the modules
-  var breadCrumbs = new BreadCrumbModule(UserAdmin);
-  breadCrumbs.load(UserAdmin.navRegion, {title: 'Home'});
+  var breadCrumbs = new BreadCrumbModule({
+    app: UserAdmin,
+    region: UserAdmin.navRegion,
+    initialData: crumbs.home
+  });
+  breadCrumbs.show();
   var userModule = new UserModule({app: UserAdmin, initialData: testData});
   var home = new HomeModule({app: UserAdmin});
 
