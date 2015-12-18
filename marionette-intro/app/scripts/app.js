@@ -5,6 +5,7 @@ var testData = [
   {id: 4, email: 'test4@test.com'}
 ];
 
+// On dom loaded, then start
 $(function() {
   UserAdmin.start();
 });

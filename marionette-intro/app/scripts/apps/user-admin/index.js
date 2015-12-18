@@ -23,7 +23,7 @@ UserAdmin.addInitializer(function() {
   UserAdmin.home = new HomeModule({app: UserAdmin});
 });
 
-// Events
+// User Events
 UserAdmin.addInitializer(function() {
 
   // Events
