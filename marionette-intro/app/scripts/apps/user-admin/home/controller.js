@@ -1,8 +1,12 @@
-var AppController = Marionette.Controller.extend({
+var HomeController = Marionette.Controller.extend({
+
+  initialize: function(options) {
+    this.module = options.module;
+  },
 
   showIndex: function() {
-    UserAdmin.mainRegion.show(new IndexView());
-    UserAdmin.HomeRouter.navigate('');
+    this.module.app.mainRegion.show(new IndexView());
+    this.module.router.navigate('');
   }
 
 });

@@ -12,7 +12,7 @@ UserAdmin.addRegions({
   navRegion: '#breadcrumbs'
 });
 
-// Events
+// Initializer
 UserAdmin.addInitializer(function() {
 
   // Internal data
@@ -21,12 +21,11 @@ UserAdmin.addInitializer(function() {
     list: {title: 'User Listing', trigger: 'user:listing:requested'}
   };
 
-  // Instantiate and load the breadcrumbs module
+  // Instantiate and load the modules
   var breadCrumbs = new BreadCrumbModule(UserAdmin);
   breadCrumbs.load(UserAdmin.navRegion, {title: 'Home'});
-
-  // Instantiate and load the user module
   var userModule = new UserModule({app: UserAdmin, initialData: testData});
+  var home = new HomeModule({app: UserAdmin});
 
   // Events
   UserAdmin.on('user:selected', function(user) {
@@ -40,20 +39,10 @@ UserAdmin.addInitializer(function() {
   });
 
   UserAdmin.on('index:requested', function() {
-    UserAdmin.AppController.showIndex();
+    home.controller.showIndex();
     breadCrumbs.setCrumbs([crumbs.home]);
   });
 
-});
-
-// Initializer
-UserAdmin.addInitializer(function() {
-
-  // Inits
-  UserAdmin.AppController = new AppController();
-  UserAdmin.HomeRouter = new HomeRouter();
-
-  // Start
   Backbone.history.start();
 });
 
