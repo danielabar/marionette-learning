@@ -56,6 +56,20 @@
     }
 
   });
+  var BreadCrumbController = Marionette.Controller.extend({
+    showHome: function() {
+      var crumbs = new Backbone.Collection({title: 'Home'});
+      this.renderView(crumbs);
+    },
+    showUserList: function() {
+      var crumbs = new Backbone.Collection([{title: 'Home'}, {title: 'User Listing'}]);
+      this.renderView(crumbs);
+    },
+    renderView: function(crumbs) {
+      var breadCrumbView = new BreadCrumbList({collection: crumbs});
+      UserAdmin.navRegion.show(breadCrumbView);
+    }
+  });
 
   // Events
   UserAdmin.addInitializer(function() {
@@ -67,10 +81,12 @@
 
     UserAdmin.on('user:listing:requested', function() {
       UserAdmin.AppController.showUserList();
+      UserAdmin.BreadCrumbController.showUserList();
     });
 
     UserAdmin.on('index:requested', function() {
       UserAdmin.AppController.showIndex();
+      UserAdmin.BreadCrumbController.showHome();
     });
 
   });
@@ -80,19 +96,15 @@
 
     // Tell the app where it should output all the templates and views (aka Regions) via jquery selector
     UserAdmin.addRegions({
-      mainRegion: '#app'
+      mainRegion: '#app',
+      navRegion: '#breadcrumbs'
     });
 
-    // Initialize the app controller
+    // Inits
     UserAdmin.AppController = new AppController();
-
-    // Don't do any rendering here, router will control that
+    UserAdmin.BreadCrumbController = new BreadCrumbController();
     UserAdmin.Router = new AppRouter();
-
-    // Required when using router
     Backbone.history.start();
-
-    // Instantiate users collection
     UserAdmin.Users = new UsersCollection(testData);
   });
 
@@ -123,6 +135,7 @@
     url: 'http://localhost:3000/users',
     model: User
   });
+  var BreadCrumbCollection = Backbone.Collection.extend({});
 
   // Views
   var IndexView = Marionette.ItemView.extend({
@@ -169,6 +182,15 @@
     onBeforeRender: function() {
       this.$el.append('<h2>User List</h2>');
     }
+  });
+  var BreadCrumbView = Marionette.ItemView.extend({
+    tagName: 'li',
+    template: _.template('<%=title%>')
+  });
+  var BreadCrumbList = Marionette.CollectionView.extend({
+    tagName: 'ol',
+    className: 'breadcrumb',
+    childView: BreadCrumbView
   });
 
   // Start
