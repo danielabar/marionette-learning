@@ -6,18 +6,10 @@
     mainRegion: '#app',
     navRegion: '#breadcrumbs'
   });
-  var AppRouter = Backbone.Router.extend({
-
-    // Define the routes
+  var UserRouter = Backbone.Router.extend({
     routes: {
-      '' : 'showIndex',
       'users': 'showUserList',
       'users/:id': 'showUserDetail'
-    },
-
-    // Define the route handlers
-    showIndex: function() {
-      UserAdmin.trigger('index:requested');
     },
     showUserList: function() {
       // broken for me on refresh unless I add this hack
@@ -37,17 +29,25 @@
       // UserAdmin.AppController.showUserDetail(id);
     }
   });
+  var HomeRouter = Backbone.Router.extend({
+    routes: {
+      '' : 'showIndex'
+    },
+    showIndex: function() {
+      UserAdmin.trigger('index:requested');
+    },
+  });
   var AppController = Marionette.Controller.extend({
 
     showIndex: function() {
-      // Show the view
       UserAdmin.mainRegion.show(new IndexView());
+      UserAdmin.HomeRouter.navigate('');
     },
 
     showUserList: function() {
       var userListView = new UserListView({collection: UserAdmin.Users});
       UserAdmin.mainRegion.show(userListView);
-      UserAdmin.Router.navigate('users'); // Update the browser url, this does not actually navigate
+      UserAdmin.UserRouter.navigate('users'); // Update the browser url, this does not actually navigate
     },
 
     showUserDetail: function(user) {
@@ -56,7 +56,7 @@
 
       layout.summary.show(new UserSummaryView({model: user}));
       layout.detail.show(new UserDetailView({model: user}));
-      UserAdmin.Router.navigate('users/' + user.id); // Update the browser url, this does not actually navigate
+      UserAdmin.UserRouter.navigate('users/' + user.id); // Update the browser url, this does not actually navigate
     }
 
   });
@@ -97,7 +97,8 @@
 
     // Inits
     UserAdmin.AppController = new AppController();
-    UserAdmin.Router = new AppRouter();
+    UserAdmin.UserRouter = new UserRouter();
+    UserAdmin.HomeRouter = new HomeRouter();
     UserAdmin.Users = new UsersCollection(testData);
 
     // Start

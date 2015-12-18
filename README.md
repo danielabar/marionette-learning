@@ -18,6 +18,8 @@ Learning Backbone and Marionette with Pluralsight [course](https://app.pluralsig
 - By convention, each directory should have an `index.js` file that represents the start of the module
 - Even though Marionette has a module system, don't use it
 
+Use multiple routers, to avoid one big app router
+
 ### Questions
 
 - Sometimes events are registered on Models, sometimes on Views, which one is best when?
