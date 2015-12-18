@@ -7,3 +7,5 @@ Marionette standard to name events separated by colon.
 `Marionette.ItemView.extend` must specify a `template`
 
 `Marionette.CollectionView.extend` must specify a `childView`
+
+Sometimes events are registered on Models, sometimes on Views, which one is best when?

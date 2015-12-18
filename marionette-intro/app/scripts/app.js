@@ -100,6 +100,11 @@
     UserAdmin.BreadCrumbs = new BreadCrumbCollection({ title: 'Home' });
     UserAdmin.navRegion.show(new BreadCrumbList({collection: UserAdmin.BreadCrumbs}));
 
+    // This really belongs in Events but BreadCrumbs are not defined until here in Initializer
+    UserAdmin.BreadCrumbs.on('breadcrumb:selected', function(crumb) {
+      UserAdmin.trigger(crumb.get('trigger'));
+    });
+
     // Start
     Backbone.history.start();
   });
@@ -133,7 +138,7 @@
   });
   var BreadCrumb = Backbone.Model.extend({
     select: function() {
-
+      this.trigger('breadcrumb:selected', this);
     }
   });
   var BreadCrumbCollection = Backbone.Collection.extend({
@@ -188,7 +193,16 @@
   });
   var BreadCrumbView = Marionette.ItemView.extend({
     tagName: 'li',
-    template: _.template('<a href="#"><%=title%></a>')
+    template: _.template('<a href="#"><%=title%></a>'),
+    events: {
+      'click a': 'fireTrigger'
+    },
+    fireTrigger: function(evt) {
+      evt.preventDefault();
+      // recall a select function exists on the BreadCrumb model
+      // but how do we know that BreadCrumb model is associated with BreadCrumbView???
+      this.model.select();
+    }
   });
   var BreadCrumbList = Marionette.CollectionView.extend({
     tagName: 'ol',
