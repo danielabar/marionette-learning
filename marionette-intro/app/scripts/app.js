@@ -1,5 +1,93 @@
 (function() {
 
+  // App Objects
+  var UserAdmin = new Marionette.Application();
+  var AppRouter = Backbone.Router.extend({
+    routes: {
+      '' : 'showIndex',
+      'users': 'showUserList',
+      'users/:id': 'showUserDetail'
+    },
+    showIndex: function() {
+      UserAdmin.AppController.showIndex();
+    },
+    showUserList: function() {
+      // broken for me on refresh unless I add this hack
+      if (!UserAdmin.Users) {
+        UserAdmin.Users = new UsersCollection(testData);
+      }
+      // if url shows /users and user refreshes the page, then this route handler will be called
+      UserAdmin.trigger('user:listing:requested');
+    },
+    showUserDetail: function(id) {
+      // broken for me on refresh unless I add this hack
+      if (!UserAdmin.Users) {
+        UserAdmin.Users = new UsersCollection(testData);
+      }
+      var user = UserAdmin.Users.get(id);
+      user.select();
+      // UserAdmin.AppController.showUserDetail(id);
+    }
+  });
+  var AppController = Marionette.Controller.extend({
+
+    showIndex: function() {
+      // Show the view
+      UserAdmin.mainRegion.show(new IndexView());
+    },
+
+    showUserList: function() {
+      var userListView = new UserListView({collection: UserAdmin.Users});
+      UserAdmin.mainRegion.show(userListView);
+      UserAdmin.Router.navigate('users'); // Update the browser url, this does not actually navigate
+    },
+
+    showUserDetail: function(user) {
+      var layout = new UserLayoutView({model: user});
+      UserAdmin.mainRegion.show(layout);
+
+      layout.summary.show(new UserSummaryView({model: user}));
+      layout.detail.show(new UserDetailView({model: user}));
+      UserAdmin.Router.navigate('users/' + user.id); // Update the browser url, this does not actually navigate
+    }
+
+  });
+
+  // Events
+  UserAdmin.addInitializer(function() {
+
+    // Events
+    UserAdmin.on('user:selected', function(user) {
+      UserAdmin.AppController.showUserDetail(user);
+    });
+
+    UserAdmin.on('user:listing:requested', function() {
+      UserAdmin.AppController.showUserList();
+    });
+
+  });
+
+  // Initializer
+  UserAdmin.addInitializer(function() {
+
+    // Tell the app where it should output all the templates and views (aka Regions) via jquery selector
+    UserAdmin.addRegions({
+      mainRegion: '#app'
+    });
+
+    // Initialize the app controller
+    UserAdmin.AppController = new AppController();
+
+    // Don't do any rendering here, router will control that
+    UserAdmin.Router = new AppRouter();
+
+    // Required when using router
+    Backbone.history.start();
+
+    // Instantiate users collection
+    UserAdmin.Users = new UsersCollection(testData);
+  });
+
   // Data
   var testData = [
     {id: 1, email: 'test1@test.com'},
@@ -28,10 +116,17 @@
     model: User
   });
 
-  // App
-  var UserAdmin = new Marionette.Application();
-
   // Views
+  var IndexView = Marionette.ItemView.extend({
+    template: '#index-template',
+    events: {
+      'click #nav-users-index' : 'showUserList'
+    },
+    showUserList: function(evt) {
+      evt.preventDefault();
+      UserAdmin.trigger('user:listing:requested');
+    }
+  });
   var UserLayoutView = Marionette.LayoutView.extend({
     template: '#user-layout-template',
     regions: {
@@ -41,6 +136,9 @@
   });
   var UserSummaryView = Marionette.ItemView.extend({
     template: '#summary-template'
+  });
+  var UserDetailView = Marionette.ItemView.extend({
+    template: '#detail-template'
   });
   var UserItemView = Marionette.ItemView.extend({
     tagName: 'tr',
@@ -63,99 +161,6 @@
     onBeforeRender: function() {
       this.$el.append('<h2>User List</h2>');
     }
-  });
-  var IndexView = Marionette.ItemView.extend({
-    template: '#index-template',
-    events: {
-      'click #nav-users-index' : 'showUserList'
-    },
-    showUserList: function(evt) {
-      evt.preventDefault();
-      UserAdmin.AppController.showUserList();
-    }
-  });
-  var UserDetailView = Marionette.ItemView.extend({
-    template: '#detail-template'
-  });
-
-  // Router
-  var AppRouter = Backbone.Router.extend({
-    routes: {
-      '' : 'showIndex',
-      'users': 'showUserList',
-      'users/:id': 'showUserDetail'
-    },
-    showIndex: function() {
-      UserAdmin.AppController.showIndex();
-    },
-    showUserList: function() {
-      // broken for me on refresh unless I add this hack
-      if (!UserAdmin.Users) {
-        UserAdmin.Users = new UsersCollection(testData);
-      }
-      // if url shows /users and user refreshes the page, then this route handler will be called
-      UserAdmin.AppController.showUserList();
-    },
-    showUserDetail: function(id) {
-      // broken for me on refresh unless I add this hack
-      if (!UserAdmin.Users) {
-        UserAdmin.Users = new UsersCollection(testData);
-      }
-      var user = UserAdmin.Users.get(id);
-      user.select();
-      // UserAdmin.AppController.showUserDetail(id);
-    }
-  });
-
-  // Controller
-  var AppController = Marionette.Controller.extend({
-
-    showIndex: function() {
-      // Show the view
-      UserAdmin.mainRegion.show(new IndexView());
-    },
-
-    showUserList: function() {
-      var userListView = new UserListView({collection: UserAdmin.Users});
-      UserAdmin.mainRegion.show(userListView);
-      UserAdmin.Router.navigate('users'); // Update the browser url, this does not actually navigate
-    },
-
-    showUserDetail: function(user) {
-      var layout = new UserLayoutView({model: user});
-      UserAdmin.mainRegion.show(layout);
-
-      layout.summary.show(new UserSummaryView({model: user}));
-      layout.detail.show(new UserDetailView({model: user}));
-      UserAdmin.Router.navigate('users/' + user.id); // Update the browser url, this does not actually navigate
-    }
-
-  });
-
-  // Initializer
-  UserAdmin.addInitializer(function() {
-
-    // Tell the app where it should output all the templates and views (aka Regions) via jquery selector
-    UserAdmin.addRegions({
-      mainRegion: '#app'
-    });
-
-    // Events
-    UserAdmin.on('user:selected', function(user) {
-      UserAdmin.AppController.showUserDetail(user);
-    });
-
-    // Initialize the app controller
-    UserAdmin.AppController = new AppController();
-
-    // Don't do any rendering here, router will control that
-    UserAdmin.Router = new AppRouter();
-
-    // Required when using router
-    Backbone.history.start();
-
-    // Instantiate users collection
-    UserAdmin.Users = new UsersCollection(testData);
   });
 
   // Start
