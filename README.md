@@ -11,6 +11,7 @@ Learning Backbone and Marionette with Pluralsight [course](https://app.pluralsig
 - Marionette standard to name events separated by colon
 - `Marionette.ItemView.extend` must specify a `template`
 - `Marionette.CollectionView.extend` must specify a `childView`
+- app initializer runs when start is called
 
 ### Code Organization
 
