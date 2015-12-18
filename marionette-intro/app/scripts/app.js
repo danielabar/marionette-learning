@@ -60,20 +60,26 @@
   // Events
   UserAdmin.addInitializer(function() {
 
+    // Internal data
+    var crumbs = {
+      home: {title: 'Home', trigger: 'index:requested'},
+      list: {title: 'User Listing', trigger: 'user:listing:requested'}
+    };
+
     // Events
     UserAdmin.on('user:selected', function(user) {
       UserAdmin.AppController.showUserDetail(user);
-      UserAdmin.BreadCrumbs.reset([{title: 'Home'}, {title: 'User Listing'}, {title: user.get('email')}]);
+      UserAdmin.BreadCrumbs.reset([crumbs.home, crumbs.list, {title: user.get('email')}]);
     });
 
     UserAdmin.on('user:listing:requested', function() {
       UserAdmin.AppController.showUserList();
-      UserAdmin.BreadCrumbs.reset([{title: 'Home'}, {title: 'User Listing'}]);
+      UserAdmin.BreadCrumbs.reset([crumbs.home, crumbs.list]);
     });
 
     UserAdmin.on('index:requested', function() {
       UserAdmin.AppController.showIndex();
-      UserAdmin.BreadCrumbs.reset([{title: 'Home'}]);
+      UserAdmin.BreadCrumbs.reset([crumbs.home]);
     });
 
   });
