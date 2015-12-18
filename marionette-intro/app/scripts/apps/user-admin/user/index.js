@@ -5,7 +5,7 @@ var UserModule = function(settings) {
   var module = {};
   module.app = settings.app || {};
 
-  module.collection = new UsersCollection(initialData);
+  module.collection = new UsersCollection();
 
   module.router = new UserRouter({module: module});
 

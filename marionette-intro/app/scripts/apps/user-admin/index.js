@@ -19,7 +19,7 @@ UserAdmin.addInitializer(function() {
     initialData: crumbs.home
   });
   UserAdmin.breadCrumbs.show();
-  UserAdmin.user = new UserModule({app: UserAdmin, initialData: testData});
+  UserAdmin.user = new UserModule({app: UserAdmin});
   UserAdmin.home = new HomeModule({app: UserAdmin});
 });
 

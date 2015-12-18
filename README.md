@@ -13,6 +13,8 @@ Learning Backbone and Marionette with Pluralsight [course](https://app.pluralsig
 - `Marionette.CollectionView.extend` must specify a `childView`
 - app initializer runs when start is called
 
+Marionette collection event has reset/sync event bound so it automatically re-renders when its data changes
+
 ### Code Organization
 
 - Create a directory for every _concern_, eg: user, breadcrumb etc.

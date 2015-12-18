@@ -8,6 +8,7 @@ var UserController = Marionette.Controller.extend({
     var userListView = new UserListView({collection: this.module.collection});
     this.module.app.mainRegion.show(userListView);
     this.module.router.navigate('users'); // Update the browser url, this does not actually navigate
+    this.module.collection.fetch();
   },
 
   showUserDetail: function(user) {
