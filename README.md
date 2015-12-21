@@ -11,16 +11,15 @@ Learning Backbone and Marionette with Pluralsight [course](https://app.pluralsig
 - Marionette standard to name events separated by colon
 - `Marionette.ItemView.extend` must specify a `template`
 - `Marionette.CollectionView.extend` must specify a `childView`
-- app initializer runs when start is called
-
-Marionette collection event has reset/sync event bound so it automatically re-renders when its data changes
+- app initializer runs when `start` is called
+- Marionette collection event has reset/sync event bound so it automatically re-renders when its data changes
 
 ### Code Organization
 
 - Create a directory for every _concern_, eg: user, breadcrumb etc.
 - By convention, each directory should have an `index.js` file that represents the start of the module
 - Even though Marionette has a module system, don't use it
-- Use multiple routers, to avoid one big app router
+- Use multiple routers, one per concern, to avoid one big app router
 
 ### Computed Properties
 
@@ -52,8 +51,10 @@ Like for regular views, need to create a template, a view, and trigger event to 
 
 ### Questions/Issues
 
+- Often when things don't work, just get nothing rendered, with no error in console, difficult to debug
+- For routing, constantly have to manually test UI via navigation and refreshing browser
+(just because it works via navigation does not necessarily mean it works via refresh, have to think about each scenario)
 - Sometimes events are registered on Models, sometimes on Views, which one is best when?
 - How to determine which model is associated with a view, especially when collections are involved
 - Instructor prefers many levels of indirection via events, does this get difficult to trace through flow of the app?
 - Debate on where to fetch data needed by a view, in router? not answered in course
-- Event bubbling from model to collection doesn't seem to work on refresh

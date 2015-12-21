@@ -7,7 +7,8 @@ var UserController = Marionette.Controller.extend({
   showUserList: function() {
     var userListView = new UserListView({collection: this.module.collection});
     this.module.app.mainRegion.show(userListView);
-    this.module.router.navigate('users'); // Update the browser url, this does not actually navigate
+    // Update the browser url, this does not trigger route handler
+    this.module.router.navigate('users');
     this.module.collection.fetch();
   },
 
@@ -17,7 +18,18 @@ var UserController = Marionette.Controller.extend({
 
     layout.summary.show(new UserSummaryView({model: user}));
     layout.detail.show(new UserDetailView({model: user}));
-    this.module.router.navigate('users/' + user.id); // Update the browser url, this does not actually navigate
+    // Update the browser url, this does not trigger route handler
+    this.module.router.navigate('users/' + user.id);
+  },
+
+  showUserEditor: function(user) {
+    var layout = new UserLayoutView({model: user});
+    this.module.app.mainRegion.show(layout);
+
+    layout.summary.show(new UserSummaryView({model: user}));
+    layout.detail.show(new UserEditorView({model: user}));
+    // Update the browser url, this does not trigger route handler
+    this.module.router.navigate('users/' + user.id + '/edit');
   }
 
 });

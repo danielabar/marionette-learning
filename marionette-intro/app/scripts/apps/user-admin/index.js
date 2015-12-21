@@ -26,9 +26,12 @@ UserAdmin.addInitializer(function() {
 // Breadcrumb Events
 UserAdmin.addInitializer(function() {
 
-  // Events
   UserAdmin.on('user:selected', function(user) {
     UserAdmin.breadCrumbs.setCrumbs([crumbs.home, crumbs.list, {title: user.get('fullName')}]);
+  });
+
+  UserAdmin.on('user:editing', function(user) {
+    UserAdmin.breadCrumbs.setCrumbs([crumbs.home, crumbs.list, {title: 'Editing ' + user.get('fullName')}]);
   });
 
   UserAdmin.on('user:listing:requested', function() {
@@ -43,9 +46,12 @@ UserAdmin.addInitializer(function() {
 // User Events
 UserAdmin.addInitializer(function() {
 
-  // Events
   UserAdmin.on('user:selected', function(user) {
     UserAdmin.user.controller.showUserDetail(user);
+  });
+
+  UserAdmin.on('user:editing', function(user) {
+    UserAdmin.user.controller.showUserEditor(user);
   });
 
   UserAdmin.on('user:listing:requested', function() {

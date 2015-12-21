@@ -11,7 +11,14 @@ var UserSummaryView = Marionette.ItemView.extend({
 });
 
 var UserDetailView = Marionette.ItemView.extend({
-  template: '#detail-template'
+  template: '#detail-template',
+  events: {
+    'click #nav-user-edit' : 'showUserEditor'
+  },
+  showUserEditor: function(evt) {
+    evt.preventDefault();
+    this.model.edit();
+  }
 });
 
 var UserItemView = Marionette.ItemView.extend({

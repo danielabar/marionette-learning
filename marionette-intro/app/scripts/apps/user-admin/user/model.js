@@ -15,9 +15,14 @@ var User = Backbone.Model.extend({
   },
 
   select: function() {
-    // In Backbone, events ripple up to collections
-    // ISSUE: Not bubbling when page is refreshed, only on navigation
+    // In Backbone, model events bubble up to collections
     this.trigger('user:selected', this);
+  },
+
+  edit: function() {
+    // In Backbone, model events bubble up to collections
+    // HOWEVER, this only works if the collection has been instantiated and is thus listening to model events
+    this.trigger('user:editing', this);
   },
 
   // computed properties
@@ -32,14 +37,22 @@ var User = Backbone.Model.extend({
 });
 
 var UsersCollection = Backbone.Collection.extend({
+
   // initialize function gets called when index.js instantiates the collection
   initialize: function(data, options) {
     var self = this;
+
     this.module = options.module;
+
     this.on('user:selected', function(model) {
       self.module.app.trigger('user:selected', model);
     });
+
+    this.on('user:editing', function(model) {
+      self.module.app.trigger('user:editing', model);
+    });
   },
+
   url: 'http://localhost:3000/users',
   model: User
 });
