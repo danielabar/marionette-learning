@@ -29,7 +29,7 @@ UserAdmin.addInitializer(function() {
   // Events
   UserAdmin.on('user:selected', function(user) {
     UserAdmin.user.controller.showUserDetail(user);
-    UserAdmin.breadCrumbs.setCrumbs([crumbs.home, crumbs.list, {title: user.get('email')}]);
+    UserAdmin.breadCrumbs.setCrumbs([crumbs.home, crumbs.list, {title: user.get('fullName')}]);
   });
 
   UserAdmin.on('user:listing:requested', function() {

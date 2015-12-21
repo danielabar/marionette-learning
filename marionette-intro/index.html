@@ -46,16 +46,23 @@
     </script>
 
     <script id="summary-template" type="text/x-backbone">
-      <p> <img src="<%=gravatrUrl(100)%>" alt="gravatar" /> </p>
+      <p> <img src="<%=gravatrUrl(200)%>" alt="gravatar" /> </p>
       <h2><%=fullName%></h2>
-      <ul>
-        <li>Thing 1</li>
-        <li>Thing 2</li>
-      </ul>
+      <table class="table table-striped">
+        <tr>
+          <td>Email:</td>
+          <td><%=email%></td>
+        </tr>
+      </table>
     </script>
 
     <script id="detail-template" type="text/x-backbone">
-      <h3>Details TBD</h3>
+      <h2>Options</h2
+      <ul>
+        <li><a href="#">Edit Basic Info</a></li>
+        <li><a href="#">Change User Roles</a></li>
+        <li><a href="#">Add a Note</a></li>
+      </ul>
     </script>
 
     <!-- Breadcrumb -->

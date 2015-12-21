@@ -7,20 +7,20 @@ var uuid = require('node-uuid');
 var usersList = [
   {
     "id" : '1',
-    "first" : "joe",
-    "last" : "schmoe",
+    "first" : "Joe",
+    "last" : "Schmoe",
     "email" : 'joe.schmoe@test.com'
   },
   {
     "id" : '2',
-    "first" : "jane",
-    "last" : "smith",
+    "first" : "Jane",
+    "last" : "Smith",
     "email" : 'jane.smith@test.com'
   },
   {
     "id" : '3',
-    "first" : "bob",
-    "last" : "jones",
+    "first" : "Bob",
+    "last" : "Jones",
     "email" : 'bob.jones@test.com'
   }
 ];
