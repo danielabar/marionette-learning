@@ -43,7 +43,7 @@ Instead of:
 Use `moment` as a global:
 
 ```html
-<td><%=lastUpdated%></td>
+<td><%=moment(lastUpdated, 'YYYYMMDD').fromNow()%></td>
 ```
 
 ### Questions/Issues
