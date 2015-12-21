@@ -15,7 +15,9 @@ var User = Backbone.Model.extend({
   },
 
   select: function() {
-    UserAdmin.trigger('user:selected', this);
+    // In Backbone, events ripple up to collections
+    // ISSUE: Not bubbling when page is refreshed, only on navigation
+    this.trigger('user:selected', this);
   },
 
   // computed properties
@@ -30,6 +32,14 @@ var User = Backbone.Model.extend({
 });
 
 var UsersCollection = Backbone.Collection.extend({
+  // initialize function gets called when index.js instantiates the collection
+  initialize: function(data, options) {
+    var self = this;
+    this.module = options.module;
+    this.on('user:selected', function(model) {
+      self.module.app.trigger('user:selected', model);
+    });
+  },
   url: 'http://localhost:3000/users',
   model: User
 });

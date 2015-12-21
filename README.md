@@ -30,8 +30,10 @@ If there are functions on the model (eg: `getFullName()`), that will not be part
 Backbone solution is to implement the `parse` function on the Backbone Model to add the property.
 Then it can be used in a template.
 
-### Questions
+### Questions/Issues
 
 - Sometimes events are registered on Models, sometimes on Views, which one is best when?
 - How to determine which model is associated with a view, especially when collections are involved
-- Instructor prefers many levels of indirection, does this get difficult to trace through flow of the app?
+- Instructor prefers many levels of indirection via events, does this get difficult to trace through flow of the app?
+- Debate on where to fetch data needed by a view, in router? not answered in course
+- Event bubbling from model to collection doesn't seem to work on refresh
