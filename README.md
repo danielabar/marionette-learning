@@ -49,6 +49,16 @@ Use `moment` as a global:
 
 Like for regular views, need to create a template, a view, and trigger event to display the sub-view.
 
+### Summary
+
+To add a new feature to an app using Marionette/Backbone:
+
+- Create a Model and Template for the feature
+- Create an ItemView (or a Collection and ItemView)
+- Create a Route which triggers an event
+- Create a Controller which implements the rendering
+- Create an application event hanlder which calls the Controller or Module
+
 ### Questions/Issues
 
 - Often when things don't work, just get nothing rendered, with no error in console, difficult to debug
@@ -58,3 +68,4 @@ Like for regular views, need to create a template, a view, and trigger event to 
 - How to determine which model is associated with a view, especially when collections are involved
 - Instructor prefers many levels of indirection via events, does this get difficult to trace through flow of the app?
 - Debate on where to fetch data needed by a view, in router? not answered in course
+- Overall need to write much more code to implement any given feature, compared to Angular or Ember
