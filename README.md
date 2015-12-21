@@ -20,8 +20,15 @@ Marionette collection event has reset/sync event bound so it automatically re-re
 - Create a directory for every _concern_, eg: user, breadcrumb etc.
 - By convention, each directory should have an `index.js` file that represents the start of the module
 - Even though Marionette has a module system, don't use it
+- Use multiple routers, to avoid one big app router
 
-Use multiple routers, to avoid one big app router
+### Computed Properties
+
+When view renders, it takes model that gets passed in and just converts to json.
+If there are functions on the model (eg: `getFullName()`), that will not be part of the json.
+
+Backbone solution is to implement the `parse` function on the Backbone Model to add the property.
+Then it can be used in a template.
 
 ### Questions
 

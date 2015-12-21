@@ -16,8 +16,17 @@ var User = Backbone.Model.extend({
 
   select: function() {
     UserAdmin.trigger('user:selected', this);
+  },
+
+  // computed properties
+  parse: function(m) {
+    m.fullName = m.first + ' ' + m.last;
+    m.gravatrUrl = function(size) {
+      return 'http://lorempixel.com/' + size + '/' + size + '/sports/' + m.first;
+    };
+    return m;
   }
-  
+
 });
 
 var UsersCollection = Backbone.Collection.extend({

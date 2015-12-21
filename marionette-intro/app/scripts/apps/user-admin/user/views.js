@@ -22,8 +22,6 @@ var UserItemView = Marionette.ItemView.extend({
   },
   showUserDetail: function(evt) {
     evt.preventDefault();
-    // pass the current user id to the user detail view
-    // UserAdmin.AppController.showUserDetail(this.model.id);
     this.model.select();
   }
 });
