@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var _ = require('underscore');
 var uuid = require('node-uuid');
+var moment = require('moment');
 
 // Simple in-memory representation
 var usersList = [
@@ -10,21 +11,21 @@ var usersList = [
     "first" : "Joe",
     "last" : "Schmoe",
     "email" : 'joe.schmoe@test.com',
-    "lastUpdated": new Date()
+    "lastUpdated": moment().subtract(6, 'days').format('YYYYMMDD')
   },
   {
     "id" : '2',
     "first" : "Jane",
     "last" : "Smith",
     "email" : 'jane.smith@test.com',
-    "lastUpdated": new Date()
+    "lastUpdated": moment().subtract(4, 'days').format('YYYYMMDD')
   },
   {
     "id" : '3',
     "first" : "Bob",
     "last" : "Jones",
     "email" : 'bob.jones@test.com',
-    "lastUpdated": new Date()
+    "lastUpdated": moment().subtract(3, 'days').format('YYYYMMDD')
   }
 ];
 

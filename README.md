@@ -32,6 +32,20 @@ Then it can be used in a template.
 
 `parse` function on model is executed by Backbone whenever a model is instantiated wiht data.
 
+As an alternate, can also put some code directly in the template, for example to format a date for display:
+
+Instead of:
+
+```html
+<td><%=lastUpdated%></td>
+```
+
+Use `moment` as a global:
+
+```html
+<td><%=lastUpdated%></td>
+```
+
 ### Questions/Issues
 
 - Sometimes events are registered on Models, sometimes on Views, which one is best when?
