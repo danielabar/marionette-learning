@@ -23,23 +23,37 @@ UserAdmin.addInitializer(function() {
   UserAdmin.home = new HomeModule({app: UserAdmin});
 });
 
+// Breadcrumb Events
+UserAdmin.addInitializer(function() {
+
+  // Events
+  UserAdmin.on('user:selected', function(user) {
+    UserAdmin.breadCrumbs.setCrumbs([crumbs.home, crumbs.list, {title: user.get('fullName')}]);
+  });
+
+  UserAdmin.on('user:listing:requested', function() {
+    UserAdmin.breadCrumbs.setCrumbs([crumbs.home, crumbs.list]);
+  });
+
+  UserAdmin.on('index:requested', function() {
+    UserAdmin.breadCrumbs.setCrumbs([crumbs.home]);
+  });
+});
+
 // User Events
 UserAdmin.addInitializer(function() {
 
   // Events
   UserAdmin.on('user:selected', function(user) {
     UserAdmin.user.controller.showUserDetail(user);
-    UserAdmin.breadCrumbs.setCrumbs([crumbs.home, crumbs.list, {title: user.get('fullName')}]);
   });
 
   UserAdmin.on('user:listing:requested', function() {
     UserAdmin.user.controller.showUserList();
-    UserAdmin.breadCrumbs.setCrumbs([crumbs.home, crumbs.list]);
   });
 
   UserAdmin.on('index:requested', function() {
     UserAdmin.home.controller.showIndex();
-    UserAdmin.breadCrumbs.setCrumbs([crumbs.home]);
   });
 
   Backbone.history.start();

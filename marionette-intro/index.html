@@ -73,6 +73,36 @@
       </table>
     </script>
 
+    <script id="user-editor-template" type="text/x-backbone">
+      <h3>Editing <%=fullName%></h3>
+      <form class="form-horizontal">
+        <div class="form-group">
+          <label for="userName" class="col-md-2 control-label">User name</label>
+          <div class="col-md-10">
+            <input id="userName" type="text" class="form-control" name="userName" value="<%=userName%>">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="email" class="col-md-2 control-label">Email</label>
+          <div class="col-md-10">
+            <input id="email" type="email" class="form-control" name="email" value="<%=email%>">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="first" class="col-md-2 control-label">First name</label>
+          <div class="col-md-10">
+            <input id="first" type="text" class="form-control" name="first" value="<%=first%>">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="last" class="col-md-2 control-label">Last name</label>
+          <div class="col-md-10">
+            <input id="last" type="text" class="form-control" name="last" value="<%=last%>">
+          </div>
+        </div>
+      </form>
+    </script>
+
     <!-- Breadcrumb -->
     <script src="app/scripts/apps/user-admin/breadcrumb/model.js"></script>
     <script src="app/scripts/apps/user-admin/breadcrumb/views.js"></script>

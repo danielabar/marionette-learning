@@ -46,6 +46,10 @@ Use `moment` as a global:
 <td><%=moment(lastUpdated, 'YYYYMMDD').fromNow()%></td>
 ```
 
+### Subviews
+
+Like for regular views, need to create a template, a view, and trigger event to display the sub-view.
+
 ### Questions/Issues
 
 - Sometimes events are registered on Models, sometimes on Views, which one is best when?

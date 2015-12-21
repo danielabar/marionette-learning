@@ -6,7 +6,8 @@ var UserRouter = Backbone.Router.extend({
 
   routes: {
     'users': 'showUserList',
-    'users/:id': 'showUserDetail'
+    'users/:id': 'showUserDetail',
+    'users/:id/edit': 'showUserEditor'
   },
 
   showUserList: function() {
@@ -14,10 +15,22 @@ var UserRouter = Backbone.Router.extend({
   },
 
   showUserDetail: function(id) {
-    var user = new User({id: id});
+    var self = this,
+      user = new User({id: id});
+
     // Debate: Is calling fetch from router a Backbone anti-pattern?
     user.fetch().then(function() {
-      user.select();
+      self.module.app.trigger('user:selected', user);
+    });
+  },
+
+  showUserEditor: function(id) {
+    // Note some code duplication with showUserDetail
+    var self = this,
+      user = new User({id: id});
+
+    user.fetch().then(function() {
+      self.module.app.trigger('user:editing', user);
     });
   }
 });

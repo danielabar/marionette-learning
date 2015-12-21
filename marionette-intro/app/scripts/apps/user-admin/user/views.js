@@ -35,3 +35,7 @@ var UserListView = Marionette.CollectionView.extend({
     this.$el.append('<h2>User List</h2>');
   }
 });
+
+var UserEditorView = Marionette.ItemView.extend({
+  template: '#user-editor-template'
+});

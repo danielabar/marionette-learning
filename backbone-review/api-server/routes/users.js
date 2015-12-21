@@ -8,6 +8,7 @@ var moment = require('moment');
 var usersList = [
   {
     "id" : '1',
+    "userName": 'jschmoe',
     "first" : "Joe",
     "last" : "Schmoe",
     "email" : 'joe.schmoe@test.com',
@@ -15,6 +16,7 @@ var usersList = [
   },
   {
     "id" : '2',
+    "userName": 'jsmith',
     "first" : "Jane",
     "last" : "Smith",
     "email" : 'jane.smith@test.com',
@@ -22,6 +24,7 @@ var usersList = [
   },
   {
     "id" : '3',
+    "userName": 'bjones',
     "first" : "Bob",
     "last" : "Jones",
     "email" : 'bob.jones@test.com',
@@ -57,9 +60,11 @@ router.post('/', function(req, res) {
 
   var created = {
     id: uuid.v4(),
+    userName: req.body.userName,
     email: req.body.email,
     first: req.body.first,
     last: req.body.last,
+    lastUpdated: moment().format('YYYYMMDD')
   };
   usersList.push(created);
 
@@ -67,7 +72,6 @@ router.post('/', function(req, res) {
 });
 
 router.put('/:id', function(req, res) {
-  // var userId = parseInt(req.params.id, 10);
   var userId = req.params.id;
   var matchingUser;
 
@@ -79,6 +83,7 @@ router.put('/:id', function(req, res) {
   for (var i=0; i<usersList.length; i++) {
     if (usersList[i].id === userId) {
       matchingUser = usersList[i];
+      matchingUser.userName = req.body.userName;
       matchingUser.email = req.body.email;
       matchingUser.first = req.body.first;
       matchingUser.last = req.body.last;
