@@ -30,6 +30,8 @@ If there are functions on the model (eg: `getFullName()`), that will not be part
 Backbone solution is to implement the `parse` function on the Backbone Model to add the property.
 Then it can be used in a template.
 
+`parse` function on model is executed by Backbone whenever a model is instantiated wiht data.
+
 ### Questions/Issues
 
 - Sometimes events are registered on Models, sometimes on Views, which one is best when?

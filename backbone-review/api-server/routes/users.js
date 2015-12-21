@@ -9,19 +9,22 @@ var usersList = [
     "id" : '1',
     "first" : "Joe",
     "last" : "Schmoe",
-    "email" : 'joe.schmoe@test.com'
+    "email" : 'joe.schmoe@test.com',
+    "lastUpdated": new Date()
   },
   {
     "id" : '2',
     "first" : "Jane",
     "last" : "Smith",
-    "email" : 'jane.smith@test.com'
+    "email" : 'jane.smith@test.com',
+    "lastUpdated": new Date()
   },
   {
     "id" : '3',
     "first" : "Bob",
     "last" : "Jones",
-    "email" : 'bob.jones@test.com'
+    "email" : 'bob.jones@test.com',
+    "lastUpdated": new Date()
   }
 ];
 
