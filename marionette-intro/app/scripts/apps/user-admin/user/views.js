@@ -44,5 +44,28 @@ var UserListView = Marionette.CollectionView.extend({
 });
 
 var UserEditorView = Marionette.ItemView.extend({
-  template: '#user-editor-template'
+  template: '#user-editor-template',
+  events: {
+    'submit' : 'saveEdits'
+  },
+  saveEdits: function(evt) {
+    evt.preventDefault();
+    var model = this.model;
+
+    this.$el.find('input[name]').each(function() {
+      // this context is provided by jquery each loop
+      model.set(this.name, this.value);
+    });
+
+    model.save(model.attributes, {
+      success: function(model, response, opts) {
+        console.log('user saved successfully');
+        console.dir(response);
+      },
+      error: function(model, response, opts) {
+        console.error('user save failed');
+        console.dir(response);
+      }
+    });
+  }
 });

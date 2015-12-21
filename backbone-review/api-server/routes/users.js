@@ -76,7 +76,7 @@ router.put('/:id', function(req, res) {
   var matchingUser;
 
   if (!req.body.email) {
-    res.send(400, {error: {message: 'Email is required'} });
+    res.status(400).send({error: {message: 'Email is required'} });
     return;
   }
 

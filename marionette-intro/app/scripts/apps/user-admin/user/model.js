@@ -2,11 +2,11 @@ var User = Backbone.Model.extend({
 
   urlRoot: 'http://localhost:3000/users',
 
-  validate: function(atts, opts) {
-    if (!(atts.email)) {
-      return 'email is required';
-    }
-  },
+  // validate: function(atts, opts) {
+  //   if (!(atts.email)) {
+  //     return 'email is required';
+  //   }
+  // },
 
   initialize: function() {
     this.on('invalid', function(m) {
